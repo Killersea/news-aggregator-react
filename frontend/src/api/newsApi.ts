@@ -2,7 +2,7 @@ export const fetchSearchResults = async (queryKey: string) => {
 	if (!queryKey) return {};
 
 	const response = await fetch(
-		`https://newsapi.org/v2/everything?q="${queryKey}"`,
+		`https://newsapi.org/v2/everything?q="${queryKey}"&searchIn=title&languange=en`,
 		{
 			headers: {
 				"X-Api-Key": import.meta.env.VITE_APP_API_KEY as string,
