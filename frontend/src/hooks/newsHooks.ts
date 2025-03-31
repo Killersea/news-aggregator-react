@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
 	fetchSearchResults,
 	fetchArticleContent,
-	fethHeadlineNews,
+	fetchHeadlineNews,
 } from "../api/newsApi";
 
 export const useSearchNews = (query: string) => {
@@ -29,7 +29,7 @@ export const useHeadlineNews = (
 ) => {
 	return useQuery({
 		queryKey: ["headline", category],
-		queryFn: () => fethHeadlineNews(country, category),
+		queryFn: () => fetchHeadlineNews(country, category),
 		staleTime: 500,
 	});
 };
