@@ -2,12 +2,7 @@ export const fetchSearchResults = async (queryKey: string) => {
 	if (!queryKey) return {};
 
 	const response = await fetch(
-		`https://newsapi.org/v2/everything?q="${queryKey}"&searchIn=title&languange=en`,
-		{
-			headers: {
-				"X-Api-Key": import.meta.env.VITE_APP_API_KEY as string,
-			},
-		}
+		`${import.meta.env.VITE_APP_VERCEL_URL}/api/news?type=search&query=${queryKey}`
 	);
 
 	if (!response.ok) {
@@ -32,23 +27,18 @@ export const fetchArticleContent = async (url: string) => {
 	return response.json();
 };
 
-export const fethHeadlineNews = async (
+export const fetchHeadlineNews = async (
 	country: string = "us",
 	category: string = "general"
 ) => {
 	if (!category) return {};
 
 	const response = await fetch(
-		`https://newsapi.org/v2/top-headlines?country=${country}&category=${category}`,
-		{
-			headers: {
-				"X-Api-Key": import.meta.env.VITE_APP_API_KEY as string,
-			},
-		}
+		`${import.meta.env.VITE_APP_VERCEL_URL}/api/news?type=headlines&country=${country}&category=${category}`
 	);
 
 	if (!response.ok) {
-		throw new Error("Failed to fetch search results");
+		throw new Error("Failed to fetch headlines");
 	}
 
 	return response.json();
