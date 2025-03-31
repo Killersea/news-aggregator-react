@@ -15,12 +15,19 @@ export default function HomePage() {
 				<AutoCompleteSearchBar setSearchResults={setSearchResults} />
 			</div>
 
-			<div className="flex flex-col items-center mt-4 px-4 md:px-8 lg:px-16">
-				{searchResults.length > 0 ? (
-					<ArticlesSearchResults searchResults={searchResults} />
-				) : (
-					<HeadlinesPage />
-				)}
+			<div
+				className={`flex flex-col items-center mt-4 px-4 md:px-8 lg:px-16 ${
+					searchResults.length > 0 ? "block" : "hidden"
+				}`}
+			>
+				<ArticlesSearchResults searchResults={searchResults} />
+			</div>
+			<div
+				className={`flex flex-col items-center mt-4 px-4 md:px-8 lg:px-16 ${
+					searchResults.length > 0 ? "hidden" : "block"
+				}`}
+			>
+				<HeadlinesPage />
 			</div>
 		</QueryClientProvider>
 	);
