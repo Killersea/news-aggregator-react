@@ -2,7 +2,7 @@ export const fetchSearchResults = async (queryKey: string) => {
 	if (!queryKey) return {};
 
 	const response = await fetch(
-		`${import.meta.env.VITE_APP_VERCEL_BACKEND_URL}/api/news?type=search&query=${queryKey}`
+		`${import.meta.env.VITE_APP_VERCEL_URL}/api/news?type=search&query=${queryKey}`
 	);
 
 	if (!response.ok) {
@@ -34,7 +34,7 @@ export const fetchHeadlineNews = async (
 	if (!category) return {};
 
 	const response = await fetch(
-		`${import.meta.env.VITE_APP_VERCEL_BACKEND_URL}/api/news?type=headlines&country=${country}&category=${category}`
+		`${import.meta.env.VITE_APP_VERCEL_URL}/api/news?type=headlines&country=${country}&category=${category}`
 	);
 
 	if (!response.ok) {
