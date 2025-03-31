@@ -21,7 +21,7 @@ export const fetchArticleContent = async (url: string) => {
 	if (!url) return {};
 
 	const response = await fetch(
-		`http://localhost:5000/api/articles/fetch-article?url=${url}`,
+		`${import.meta.env.VITE_APP_VERCEL_URL}/api/articleContent?url=${url}`,
 		{}
 	);
 
