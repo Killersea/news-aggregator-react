@@ -98,7 +98,7 @@ export default function ArticleModal({
             </Typography>
 
             <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-              {content || "Loading content..."}
+              {content || article?.content || "Loading content..."}
             </Typography>
           </Box>
         </Box>
