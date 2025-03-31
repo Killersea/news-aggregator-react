@@ -91,7 +91,7 @@ export default function ArticleModal({
             </Typography>
 
             <Typography variant="subtitle1" sx={{ color: "gray", mb: 2 }}>
-              By {article?.author || "Unknown"} |
+              By {article?.author || "Unknown"} |{" "}
               {article?.publishedAt
                 ? new Date(article.publishedAt).toLocaleDateString()
                 : "Unknown Date"}
