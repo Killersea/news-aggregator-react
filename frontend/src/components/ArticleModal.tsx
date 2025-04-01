@@ -23,7 +23,6 @@ export default function ArticleModal({
 
     return data;
   }, [data, isLoading, error]);
-
   useEffect(() => {
     if (newsContent) {
       setContent(newsContent.content);
