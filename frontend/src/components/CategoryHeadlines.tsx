@@ -105,6 +105,9 @@ export default function CategoryHeadlines({
                           width: "100%",
                           objectFit: "cover",
                         }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = newsAPI; // Replace with default if error
+                        }}
                       />
                     </CardActionArea>
                     <Box
