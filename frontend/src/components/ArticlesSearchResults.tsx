@@ -62,7 +62,7 @@ export default function ArticlesSearchResults({
                   {article.description}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  By {article?.author || "Unknown"} |
+                  By {article?.author || "Unknown"} |{" "}
                   {article?.publishedAt
                     ? new Date(article.publishedAt).toLocaleDateString()
                     : "Unknown Date"}

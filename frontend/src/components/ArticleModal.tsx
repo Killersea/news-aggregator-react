@@ -91,14 +91,14 @@ export default function ArticleModal({
             </Typography>
 
             <Typography variant="subtitle1" sx={{ color: "gray", mb: 2 }}>
-              By {article?.author || "Unknown"} |
+              By {article?.author || "Unknown"} |{" "}
               {article?.publishedAt
                 ? new Date(article.publishedAt).toLocaleDateString()
                 : "Unknown Date"}
             </Typography>
 
             <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-              {content || "Loading content..."}
+              {content || article?.content || "Loading content..."}
             </Typography>
           </Box>
         </Box>
