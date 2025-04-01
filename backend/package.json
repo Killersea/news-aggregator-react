@@ -2,17 +2,13 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon --ext ts --exec ts-node src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
-  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
+    "@vercel/node": "^5.1.14",
     "axios": "^1.8.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -24,6 +20,7 @@
     "@types/express": "^5.0.1",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.13.14",
+    "@vercel/node": "^5.1.14",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
