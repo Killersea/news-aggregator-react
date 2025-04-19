@@ -58,19 +58,25 @@ export default function HeadlinesCarousel() {
 	}, [data, isLoading, error]);
 
 	const handlePrev = () => {
-		setCurrentIndex((prevIndex) =>
-			prevIndex === 0 ? headlineNews.length - 1 : prevIndex - 1
-		);
+		const newIndex = currentIndex === 0 ? 0 : currentIndex - 1;
+
+		setCurrentIndex(newIndex);
+		setSelectedArticle(headlineNews[newIndex]);
 	};
 
 	const handleNext = () => {
-		setCurrentIndex((prevIndex) =>
-			prevIndex === headlineNews.length - 1 ? 0 : prevIndex + 1
-		);
+		const newIndex =
+			currentIndex === headlineNews.length - 1
+				? headlineNews.length - 1
+				: currentIndex + 1;
+
+		setCurrentIndex(newIndex);
+		setSelectedArticle(headlineNews[newIndex]);
 	};
 
-	const handleOpenModal = (article: ArticleData) => {
-		setSelectedArticle(article);
+	const handleOpenModal = (index: number) => {
+		setCurrentIndex(index);
+		setSelectedArticle(headlineNews[index]);
 		setModalOpen(true);
 	};
 
@@ -88,17 +94,18 @@ export default function HeadlinesCarousel() {
 				sx={{
 					position: "relative",
 					width: "85%",
-					height: 500,
+					height: "40vh",
 				}}
 			>
-				<CardActionArea
-					onClick={() => handleOpenModal(headlineNews[currentIndex])}
-				>
+				<CardActionArea onClick={() => handleOpenModal(currentIndex)}>
 					<CardMedia
 						component="img"
 						image={headlineNews[currentIndex].urlToImage || newsAPI}
 						alt={headlineNews[currentIndex].title}
-						sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+						sx={{ width: "100%", height: "40vh", objectFit: "cover" }}
+						onError={(e) => {
+							(e.target as HTMLImageElement).src = newsAPI;
+						}}
 					/>
 				</CardActionArea>
 				<CardContent
@@ -143,6 +150,8 @@ export default function HeadlinesCarousel() {
 			<ArticleModal
 				open={modalOpen}
 				handleClose={handleCloseModal}
+				handlePrev={handlePrev}
+				handleNext={handleNext}
 				article={selectedArticle}
 			/>
 		</>

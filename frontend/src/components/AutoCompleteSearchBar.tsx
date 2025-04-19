@@ -1,155 +1,167 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import {
-  TextField,
-  Autocomplete,
-  createFilterOptions,
-  Box,
-  Typography,
+	TextField,
+	Autocomplete,
+	createFilterOptions,
+	Box,
+	Typography,
 } from "@mui/material";
 import { useSearchNews } from "../hooks/newsHooks";
 import { ArticleData } from "../interfaces/articleInterface";
 
 interface AutoCompleteSearchBarProps {
-  setSearchResults: (results: ArticleData[]) => void;
+	setSearchResults: (results: ArticleData[]) => void;
 }
 
 export default function AutoCompleteSearchBar({
-  setSearchResults,
+	setSearchResults,
 }: AutoCompleteSearchBarProps) {
-  const hint = useRef("");
-  const [inputValue, setInputValue] = useState("");
-  const [debouncedValue, setDebouncedValue] = useState("");
+	const hint = useRef("");
+	const [inputValue, setInputValue] = useState(() => {
+		return localStorage.getItem("searchInput") || "";
+	});
+	const [debouncedValue, setDebouncedValue] = useState(() => {
+		return localStorage.getItem("searchInput") || "";
+	});
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(inputValue);
-    }, 1000);
+	useEffect(() => {
+		localStorage.setItem("searchInput", inputValue);
+	}, [debouncedValue]);
 
-    return () => clearTimeout(handler);
-  }, [inputValue]);
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			setDebouncedValue(inputValue);
+		}, 1000);
 
-  const { data, error, isLoading } = useSearchNews(debouncedValue);
+		return () => clearTimeout(handler);
+	}, [inputValue]);
 
-  const searchResult = useMemo(() => {
-    if (isLoading || error || !data || !data.articles) return [];
+	const { data, error, isLoading } = useSearchNews(debouncedValue);
 
-    const uniqueTitles = new Map();
+	const searchResult = useMemo(() => {
+		if (isLoading || error || !data || !data.articles) return [];
 
-    return data.articles
-      .filter(
-        ({ description, content, title }: ArticleData) =>
-          description && content && title
-      )
-      .filter(({ title }: ArticleData) => {
-        if (uniqueTitles.has(title)) return false;
-        uniqueTitles.set(title, true);
-        return true;
-      })
-      .map(
-        ({
-          author,
-          title,
-          description,
-          url,
-          urlToImage,
-          publishedAt,
-          content,
-        }: ArticleData) => ({
-          author,
-          title,
-          description,
-          url,
-          urlToImage,
-          publishedAt,
-          content,
-        })
-      );
-  }, [data, isLoading, error]);
+		const uniqueTitles = new Map();
 
-  const articleTitleOptions = searchResult.map(({ title }: ArticleData) => ({
-    title,
-  }));
+		return data.articles
+			.filter(
+				({ description, content, title }: ArticleData) =>
+					description && content && title
+			)
+			.filter(({ title }: ArticleData) => {
+				if (uniqueTitles.has(title)) return false;
+				uniqueTitles.set(title, true);
+				return true;
+			})
+			.map(
+				({
+					author,
+					title,
+					description,
+					url,
+					urlToImage,
+					publishedAt,
+					content,
+				}: ArticleData) => ({
+					author,
+					title,
+					description,
+					url,
+					urlToImage,
+					publishedAt,
+					content,
+				})
+			);
+	}, [data, isLoading, error]);
 
-  useEffect(() => {
-    const filteredResults = searchResult.filter(({ title }: ArticleData) =>
-      inputValue
-        ? title.toLowerCase().startsWith(inputValue.toLowerCase())
-        : true
-    );
-    if (filteredResults.length > 0) {
-      setSearchResults(filteredResults);
-      const handler = setTimeout(() => {}, 1000);
-      return () => clearTimeout(handler);
-    } else {
-      const handler = setTimeout(() => {
-        setSearchResults([]);
-      }, 1000);
-      return () => clearTimeout(handler);
-    }
-  }, [searchResult]);
+	const articleTitleOptions = searchResult.map(({ title }: ArticleData) => ({
+		title,
+	}));
 
-  const filterOptions = useMemo(
-    () =>
-      createFilterOptions({
-        matchFrom: "start",
-        stringify: ({ title }: ArticleData) => title ?? "",
-      }),
-    []
-  );
+	useEffect(() => {
+		const filteredResults = searchResult.filter(({ title }: ArticleData) =>
+			inputValue
+				? title.toLowerCase().startsWith(inputValue.toLowerCase())
+				: true
+		);
+		if (filteredResults.length > 0) {
+			setSearchResults(filteredResults);
+			const handler = setTimeout(() => {}, 1000);
+			return () => clearTimeout(handler);
+		} else {
+			const handler = setTimeout(() => {
+				setSearchResults([]);
+			}, 1000);
+			return () => clearTimeout(handler);
+		}
+	}, [searchResult]);
 
-  return (
-    <Autocomplete
-      onKeyDown={(event) => {
-        if (event.key === "Tab" && hint.current) {
-          setInputValue(hint.current);
-          event.preventDefault();
-        }
-      }}
-      filterOptions={filterOptions}
-      onClose={() => {
-        hint.current = "";
-      }}
-      onChange={(_, newValue) => {
-        setInputValue(newValue?.title || "");
-      }}
-      disablePortal
-      inputValue={inputValue}
-      id="combo-box-hint-demo"
-      options={articleTitleOptions}
-      sx={{ width: "75%" }}
-      getOptionLabel={(option) => option.title || ""}
-      renderInput={(params) => (
-        <Box textAlign="left" sx={{ position: "relative", padding: 0 }}>
-          <Typography
-            sx={{
-              position: "absolute",
-              opacity: 0.5,
-              left: 14,
-              top: 16,
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              width: "calc(100%)",
-            }}
-          >
-            {hint.current}
-          </Typography>
-          <TextField
-            {...params}
-            onChange={(event) => {
-              const newValue = event.target.value;
-              setInputValue(newValue);
-              const matchingOption = articleTitleOptions.find(
-                ({ title }: ArticleData) => title.startsWith(newValue)
-              );
+	const filterOptions = useMemo(
+		() =>
+			createFilterOptions({
+				matchFrom: "start",
+				stringify: ({ title }: ArticleData) => title ?? "",
+			}),
+		[]
+	);
 
-              hint.current =
-                newValue && matchingOption ? matchingOption.title : "";
-            }}
-            label="News Search"
-            fullWidth
-          />
-        </Box>
-      )}
-    />
-  );
+	return (
+		<Autocomplete
+			clearOnEscape
+			onKeyDown={(event) => {
+				if (event.key === "Tab" && hint.current) {
+					setInputValue(hint.current);
+					event.preventDefault();
+				}
+				if (event.key === "Escape") {
+					setInputValue("");
+				}
+			}}
+			filterOptions={filterOptions}
+			onClose={() => {
+				hint.current = "";
+			}}
+			onChange={(_, newValue) => {
+				setInputValue(newValue?.title || "");
+			}}
+			disablePortal
+			inputValue={inputValue}
+			id="combo-box-hint-demo"
+			options={articleTitleOptions}
+			sx={{ width: "75%" }}
+			getOptionLabel={(option) => option.title || ""}
+			renderInput={(params) => (
+				<Box textAlign="left" sx={{ position: "relative", padding: 0 }}>
+					<Typography
+						sx={{
+							position: "absolute",
+							opacity: 0.5,
+							left: 14,
+							top: 16,
+							overflow: "hidden",
+							whiteSpace: "nowrap",
+							width: "calc(100%)",
+						}}
+					>
+						{hint.current}
+					</Typography>
+					<TextField
+						{...params}
+						onChange={(event) => {
+							const newValue = event.target.value;
+							setInputValue(newValue);
+							const matchingOption = articleTitleOptions.find(
+								({ title }: ArticleData) => title.startsWith(newValue)
+							);
+
+							hint.current =
+								newValue && matchingOption ? matchingOption.title : "";
+						}}
+						label="News Search"
+						fullWidth
+					/>
+				</Box>
+			)}
+		/>
+	);
 }

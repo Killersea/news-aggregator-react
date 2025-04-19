@@ -11,7 +11,7 @@ export const useSearchNews = (query: string) => {
 		queryFn: () => fetchSearchResults(query),
 		enabled: query.trim().length > 2, // Fetch only if >2 chars
 		refetchOnWindowFocus: false,
-		staleTime: 500,
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 };
 
@@ -19,7 +19,7 @@ export const useArticleContent = (aritlceUrl: string) => {
 	return useQuery({
 		queryKey: ["content", aritlceUrl],
 		queryFn: () => fetchArticleContent(aritlceUrl),
-		staleTime: 500,
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 };
 
@@ -30,6 +30,6 @@ export const useHeadlineNews = (
 	return useQuery({
 		queryKey: ["headline", category],
 		queryFn: () => fethHeadlineNews(country, category),
-		staleTime: 500,
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 };
