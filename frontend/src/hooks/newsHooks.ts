@@ -29,7 +29,7 @@ export const useHeadlineNews = (
 ) => {
 	return useQuery({
 		queryKey: ["headline", category],
-		queryFn: () => fethHeadlineNews(country, category),
+		queryFn: () => fetchHeadlineNews(country, category),
 		staleTime: 1000 * 60 * 5, // 5 minutes
 	});
 };
