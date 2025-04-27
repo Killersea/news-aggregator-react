@@ -5,6 +5,12 @@ A **React-based** news aggregation app that fetches and displays news from [**Ne
 **Live Demo:** [News Aggregator on Vercel](https://news-aggregator-react-nine.vercel.app/)
 
 ---
+## V1.5 Updates
+- Improved UI & Mobile experience
+- Added article navigation in modal (Previous / Next)
+- Use of local storage for caching fetched articles
+- Cloud Convert Integration ( In - Progress)
+---
 
 ## Features
 
