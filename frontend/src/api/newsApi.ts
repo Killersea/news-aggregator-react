@@ -32,7 +32,7 @@ export const fetchArticleContent = async (url: string) => {
 	return response.json();
 };
 
-export const fethHeadlineNews = async (
+export const fetchHeadlineNews = async (
 	country: string = "us",
 	category: string = "general"
 ) => {

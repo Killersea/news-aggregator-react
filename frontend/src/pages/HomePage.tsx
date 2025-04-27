@@ -5,14 +5,40 @@ import { ArticleData } from "../interfaces/articleInterface";
 import ArticlesSearchResults from "../components/ArticlesSearchResults";
 import HeadlinesPage from "./HeadlinesPage";
 import { queryClient } from "../queryClient.ts";
+import Clock from "../components/Clock";
+import newsAPILogo from "../assets/newsAPILogo.png";
 
 export default function HomePage() {
 	const [searchResults, setSearchResults] = useState<ArticleData[]>([]);
+	const [inputValue, setInputValue] = useState(() => {
+		return localStorage.getItem("searchInput") || "";
+	});
+	const handleLogoClick = () => {
+		setInputValue("");
+		setSearchResults([]);
+	};
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<div className="sticky top-0 bg-white z-10 shadow-md p-4 flex justify-center">
-				<AutoCompleteSearchBar setSearchResults={setSearchResults} />
+			<div className="sticky top-0 bg-white z-10 shadow-md p-4 flex items-center px-8">
+				<div
+					className="hidden md:flex items-center justify-center w-[200px] h-full cursor-pointer"
+					onClick={handleLogoClick}
+				>
+					<img src={newsAPILogo} alt="Logo" />
+				</div>
+
+				<div className="flex-grow flex justify-center">
+					<AutoCompleteSearchBar
+						setSearchResults={setSearchResults}
+						inputValue={inputValue}
+						setInputValue={setInputValue}
+					/>
+				</div>
+
+				<div className="hidden md:flex items-center justify-center text-sm text-gray-600 w-[200px] h-full">
+					<Clock />
+				</div>
 			</div>
 
 			<div
