@@ -93,8 +93,8 @@ export default function HeadlinesCarousel() {
 			<Card
 				sx={{
 					position: "relative",
-					width: { s: "95%", md: "85%" },
-					height: { s: "30vh", md: "40vh" },
+					width: { xs: "95%", md: "85%" },
+					height: { xs: "30vh", md: "40vh" },
 				}}
 			>
 				<CardActionArea onClick={() => handleOpenModal(currentIndex)}>
