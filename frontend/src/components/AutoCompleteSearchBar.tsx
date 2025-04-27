@@ -11,15 +11,17 @@ import { ArticleData } from "../interfaces/articleInterface";
 
 interface AutoCompleteSearchBarProps {
 	setSearchResults: (results: ArticleData[]) => void;
+	inputValue: string;
+	setInputValue: (value: string) => void;
 }
 
 export default function AutoCompleteSearchBar({
 	setSearchResults,
+	inputValue,
+	setInputValue,
 }: AutoCompleteSearchBarProps) {
 	const hint = useRef("");
-	const [inputValue, setInputValue] = useState(() => {
-		return localStorage.getItem("searchInput") || "";
-	});
+
 	const [debouncedValue, setDebouncedValue] = useState(() => {
 		return localStorage.getItem("searchInput") || "";
 	});
@@ -128,7 +130,7 @@ export default function AutoCompleteSearchBar({
 			inputValue={inputValue}
 			id="combo-box-hint-demo"
 			options={articleTitleOptions}
-			sx={{ width: "75%" }}
+			sx={{ width: "90%" }}
 			getOptionLabel={(option) => option.title || ""}
 			renderInput={(params) => (
 				<Box textAlign="left" sx={{ position: "relative", padding: 0 }}>
