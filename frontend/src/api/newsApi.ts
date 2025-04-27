@@ -2,7 +2,12 @@ export const fetchSearchResults = async (queryKey: string) => {
 	if (!queryKey) return {};
 
 	const response = await fetch(
-		`${import.meta.env.VITE_APP_VERCEL_URL}/api/news?type=search&query=${queryKey}`
+		`https://newsapi.org/v2/everything?q="${queryKey}"&searchIn=title&languange=en`,
+		{
+			headers: {
+				"X-Api-Key": import.meta.env.VITE_APP_API_KEY as string,
+			},
+		}
 	);
 
 	if (!response.ok) {
@@ -16,7 +21,7 @@ export const fetchArticleContent = async (url: string) => {
 	if (!url) return {};
 
 	const response = await fetch(
-		`${import.meta.env.VITE_APP_VERCEL_URL}/api/articleContent?url=${url}`,
+		`http://localhost:5000/api/articles/fetch-article?url=${url}`,
 		{}
 	);
 
@@ -27,18 +32,23 @@ export const fetchArticleContent = async (url: string) => {
 	return response.json();
 };
 
-export const fetchHeadlineNews = async (
+export const fethHeadlineNews = async (
 	country: string = "us",
 	category: string = "general"
 ) => {
 	if (!category) return {};
 
 	const response = await fetch(
-		`${import.meta.env.VITE_APP_VERCEL_URL}/api/news?type=headlines&country=${country}&category=${category}`
+		`https://newsapi.org/v2/top-headlines?country=${country}&category=${category}`,
+		{
+			headers: {
+				"X-Api-Key": import.meta.env.VITE_APP_API_KEY as string,
+			},
+		}
 	);
 
 	if (!response.ok) {
-		throw new Error("Failed to fetch headlines");
+		throw new Error("Failed to fetch search results");
 	}
 
 	return response.json();

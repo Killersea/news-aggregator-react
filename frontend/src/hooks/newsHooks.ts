@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
 	fetchSearchResults,
 	fetchArticleContent,
-	fetchHeadlineNews,
+	fethHeadlineNews,
 } from "../api/newsApi";
 
 export const useSearchNews = (query: string) => {
