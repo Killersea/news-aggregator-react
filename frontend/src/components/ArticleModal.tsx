@@ -66,7 +66,7 @@ export default function ArticleModal({
 			<Slide in={open} direction="up">
 				<Box
 					sx={{
-						width: { s: "95%", md: "75%" },
+						width: { s: "85%", md: "75%" },
 						height: "95%",
 						bgcolor: "background.paper",
 						boxShadow: 24,
