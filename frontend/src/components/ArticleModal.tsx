@@ -66,7 +66,7 @@ export default function ArticleModal({
 			<Slide in={open} direction="up">
 				<Box
 					sx={{
-						width: "75%",
+						width: { s: "95%", md: "75%" },
 						height: "95%",
 						bgcolor: "background.paper",
 						boxShadow: 24,
@@ -104,7 +104,7 @@ export default function ArticleModal({
 							alt={article?.title || "No title available"}
 							sx={{
 								height: {
-									xs: "30vh",
+									s: "20vh",
 									md: "40vh",
 								},
 								width: "100%",
@@ -128,7 +128,7 @@ export default function ArticleModal({
 									fontWeight: "bold",
 									mb: 1,
 									fontSize: {
-										xs: "1.5rem",
+										s: "1.5rem",
 										md: "2.2rem",
 									},
 								}}
@@ -141,7 +141,7 @@ export default function ArticleModal({
 									color: "gray",
 									mb: 2,
 									fontSize: {
-										xs: ".8rem",
+										s: ".8rem",
 										md: "1rem",
 									},
 								}}
@@ -156,7 +156,7 @@ export default function ArticleModal({
 								sx={{
 									lineHeight: 1.6,
 									fontSize: {
-										xs: ".9rem", // ~16px
+										s: ".9rem", // ~16px
 										md: "1.125rem", // ~18px
 									},
 								}}
