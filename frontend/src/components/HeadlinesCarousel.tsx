@@ -94,7 +94,7 @@ export default function HeadlinesCarousel() {
 				sx={{
 					position: "relative",
 					width: { xs: "95%", md: "85%" },
-					height: { xs: "20vh", md: "40vh" },
+					height: { xs: "30vh", md: "40vh" },
 				}}
 			>
 				<CardActionArea onClick={() => handleOpenModal(currentIndex)}>
@@ -118,7 +118,7 @@ export default function HeadlinesCarousel() {
 						color: "white",
 					}}
 				>
-					<Typography variant="h6">
+					<Typography sx={{ fontSize: { xs: "10px", md: "20px" } }}>
 						{headlineNews[currentIndex].title}
 					</Typography>
 				</CardContent>
