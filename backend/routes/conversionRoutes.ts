@@ -1,9 +1,11 @@
 // routes/conversionRoutes.ts
 import express, { Request, Response } from "express";
 import { upload } from "../middlewares/uploadMiddleware";
+import { IncomingForm } from "formidable-serverless";
 import axios from "axios";
 import FormData from "form-data";
 import dotenv from "dotenv";
+import fs from "fs";
 
 dotenv.config();
 
@@ -40,38 +42,62 @@ router.post("/create-job", async (req: Request, res: Response) => {
 
 router.post(
   "/upload-file",
-  upload.single("file"),
   async (req: Request, res: Response): Promise<void> => {
-    const { server, jobId } = req.body;
-    const file = req.file;
+    const form = new IncomingForm();
 
-    if (!server || !jobId || !file) {
-      res.status(400).json({ error: "Missing server, jobId, or file" });
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file.buffer, file.originalname);
-
-    try {
-      const uploadResponse = await axios.post(
-        `${server}/upload-file/${jobId}`,
-        formData,
-        {
-          headers: {
-            ...formData.getHeaders(),
-            "x-oc-api-key": process.env.API2CONVERT_API_KEY || "",
-          },
+    form.parse(
+      req,
+      async (
+        err: any,
+        fields: { server: string; jobId: string },
+        files: { file: any }
+      ) => {
+        if (err) {
+          console.error("Form parse error:", err);
+          res.status(400).json({ error: "Invalid form data" });
+          return;
         }
-      );
 
-      res.json(uploadResponse.data);
-    } catch (err) {
-      console.error("File upload failed:", err);
-      res
-        .status(500)
-        .json({ error: "Failed to upload file to conversion server" });
-    }
+        const server = fields.server as string;
+        const jobId = fields.jobId as string;
+        const file = files.file;
+
+        if (!server || !jobId || !file || Array.isArray(file)) {
+          res
+            .status(400)
+            .json({ error: "Missing or invalid server, jobId, or file" });
+          return;
+        }
+
+        try {
+          const formData = new FormData();
+          formData.append(
+            "file",
+            fs.createReadStream(file.path),
+            file.originalFilename || file.name
+          );
+
+          const uploadResponse = await axios.post(
+            `${server}/upload-file/${jobId}`,
+            formData,
+            {
+              headers: {
+                ...formData.getHeaders(),
+                "x-oc-api-key": process.env.API2CONVERT_API_KEY || "",
+              },
+            }
+          );
+
+          await fs.promises.unlink(file.path);
+          res.json(uploadResponse.data);
+        } catch (err) {
+          console.error("File upload failed:", err);
+          res
+            .status(500)
+            .json({ error: "Failed to upload file to conversion server" });
+        }
+      }
+    );
   }
 );
 
