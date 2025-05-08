@@ -5,8 +5,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { category, target } = req.body;
   const API_KEY = process.env.API2CONVERT_API_KEY;
 
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://news-aggregator-react-nine.vercel.app"
+  ); // Change to your frontend URL
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+
   if (req.method === "OPTIONS") {
-    return res.status(204).end();
+    res.status(204).end();
+    return;
   }
 
   if (req.method !== "POST") {
