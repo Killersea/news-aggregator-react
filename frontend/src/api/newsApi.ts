@@ -104,7 +104,7 @@ export const checkJobStatus = async (jobId: string) => {
   const response = await fetch(
     `${
       import.meta.env.VITE_APP_VERCEL_URL
-    }/api/convert/check-job-status/jobId=${jobId}`
+    }/api/convert/check-job-status?jobId=${jobId}`
   );
 
   if (!response.ok) {
