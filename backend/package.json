@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,6 +12,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "formidable-serverless": "^1.1.1",
     "jsdom": "^26.0.0"
   },
   "devDependencies": {

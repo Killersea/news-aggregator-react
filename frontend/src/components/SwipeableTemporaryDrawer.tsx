@@ -1,14 +1,6 @@
-import {
-  Box,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-} from "@mui/material";
+import { Box, List, ListItem, Divider } from "@mui/material";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+import FileUploadConvert from "./FileUploadConvert";
 
 interface SwipeableTemporaryDrawerProps {
   opendrawer: boolean;
@@ -24,27 +16,11 @@ export default function SwipeableTemporaryDrawer({
   };
 
   const DrawerList = (
-    <Box
-      sx={{ width: { xs: "40vh", md: "30vh" } }}
-      role="drawer"
-      onClick={toggleDrawer(false)}
-    >
+    <Box sx={{ width: { xs: "40vh", md: "30vh" } }} role="drawer">
       <List>
-        {["Convert File"].map(
-          (
-            text
-            // ,index
-          ) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          )
-        )}
+        <ListItem>
+          <FileUploadConvert />
+        </ListItem>
       </List>
       <Divider />
     </Box>
