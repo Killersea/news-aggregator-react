@@ -17,14 +17,5 @@
         }
       ]
     }
-  ],
-
-  "functions": {
-    "api/convert/create-job.ts": {
-      "methods": ["POST", "OPTIONS"]
-    },
-    "api/convert/upload-file.ts": {
-      "methods": ["POST", "OPTIONS"]
-    }
-  }
+  ]
 }
