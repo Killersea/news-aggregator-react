@@ -2,9 +2,6 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import axios from "axios";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { jobId } = req.query;
-  const API_KEY = process.env.API2CONVERT_API_KEY;
-
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://news-aggregator-react-nine.vercel.app"
@@ -15,6 +12,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
+
+  const { jobId } = req.query;
+  const API_KEY = process.env.API2CONVERT_API_KEY;
 
   if (!API_KEY) {
     return res.status(500).json({ error: "Missing API key" });

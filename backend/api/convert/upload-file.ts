@@ -5,9 +5,6 @@ import FormData from "form-data";
 import { IncomingForm } from "formidable-serverless";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const form = new IncomingForm();
-  const API_KEY = process.env.API2CONVERT_API_KEY;
-
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://news-aggregator-react-nine.vercel.app"
@@ -22,6 +19,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
+
+  const form = new IncomingForm();
+  const API_KEY = process.env.API2CONVERT_API_KEY;
 
   if (!API_KEY) {
     return res.status(500).json({ error: "Missing API key" });

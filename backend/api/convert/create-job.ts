@@ -2,9 +2,6 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import axios from "axios";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { category, target } = req.body;
-  const API_KEY = process.env.API2CONVERT_API_KEY;
-
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://news-aggregator-react-nine.vercel.app"
@@ -15,6 +12,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
+
+  const { category, target } = req.body;
+  const API_KEY = process.env.API2CONVERT_API_KEY;
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
