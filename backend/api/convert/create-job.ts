@@ -46,6 +46,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json(response.data);
   } catch (error: any) {
     console.error("Create job error:", error.message);
-    return res.status(500).json({ error: "Failed to fetch news" });
+    return res.status(500).json({ error: "Failed to create job" });
   }
 }

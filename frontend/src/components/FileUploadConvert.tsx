@@ -151,6 +151,7 @@ export default function FileUploadConvert() {
           sx={{
             fontWeight: 600,
             color: file.length > 0 ? "text.primary" : "text.disabled",
+            textOverflow: "ellipsis",
           }}
         >
           {file.length > 0 ? file[0].name : "No file selected"}
