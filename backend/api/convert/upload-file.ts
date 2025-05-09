@@ -1,6 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { del } from "@vercel/blob";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader(
