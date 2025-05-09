@@ -48,36 +48,13 @@ export const fetchHeadlineNews = async (
   return response.json();
 };
 
-export const uploadAndConvertFile = async (
-  file: File,
-  jobId: string,
-  server: string
-) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("jobId", jobId);
-  formData.append("server", server);
-
-  const response = await fetch(
-    `${import.meta.env.VITE_APP_VERCEL_URL}/api/convert/upload-file`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to upload file to backend");
-  }
-
-  return response.json();
-};
-
 export const createConversionJob = async (
+  uploadedUrl: string,
   category: string,
   convertTo: string
 ) => {
   const body = {
+    source: uploadedUrl,
     category,
     target: convertTo,
   };

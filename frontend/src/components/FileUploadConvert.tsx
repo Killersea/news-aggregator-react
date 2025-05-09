@@ -10,11 +10,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import { conversionOptions } from "../constants/conversionOptions";
-import {
-  useFileConversion,
-  useConversionCreateJob,
-  useCheckJobStatus,
-} from "../hooks/fileHooks";
+import { useConversionCreateJob, useCheckJobStatus } from "../hooks/fileHooks";
+import { upload } from "@vercel/blob/client";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -53,6 +50,7 @@ export default function FileUploadConvert() {
   const [convertTo, setConvertTo] = useState("");
   const [pollingEnabled, setPollingEnabled] = useState(false);
   const [conversionId, setConversionId] = useState<string | null>(null);
+  const [doneConverting, setDoneConverting] = useState(true);
 
   const maxFileSize = 100 * 1024 * 1024; // 1 GB
   const fileSizeBytes = file.length > 0 ? file[0].size : 0;
@@ -62,32 +60,44 @@ export default function FileUploadConvert() {
   const availableConversions = category ? conversionOptions[category] : [];
   const isFileTooLarge = fileSizeBytes > maxFileSize;
 
-  const { mutate: createJob, status: jobStatus } = useConversionCreateJob();
-  const { mutate: createConvert, status: convertStatus } = useFileConversion();
+  const { mutate: createJob } = useConversionCreateJob();
   const { data: jobFinishData } = useCheckJobStatus(
     conversionId || "",
     pollingEnabled
   );
 
-  const handleCreateJob = () => {
+  const handleFileUpload = async () => {
     if (!file[0] || !convertTo || !category) return;
 
+    try {
+      setDoneConverting(false);
+      const { url } = await upload(file[0].name, file[0], {
+        access: "public",
+        handleUploadUrl: `${
+          import.meta.env.VITE_APP_VERCEL_URL
+        }/api/convert/upload-file`,
+      });
+      handleCreateJob(url);
+      console.log("File uploaded successfully:", url);
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
+
+  const handleCreateJob = (uploadedUrl: string) => {
+    if (!file[0] || !convertTo || !category || !uploadedUrl) return;
+    console.log("Creating job with URL:", uploadedUrl);
+
     createJob(
-      { category: category as string, convertTo },
+      {
+        uploadedUrl: uploadedUrl,
+        category: category as string,
+        convertTo,
+      },
       {
         onSuccess: (data) => {
-          createConvert(
-            { file: file[0], jobId: data.id, server: data.server },
-            {
-              onSuccess: (data) => {
-                setConversionId(data.id.job);
-                setPollingEnabled(true);
-              },
-              onError: (error) => {
-                console.error("Conversion failed:", error);
-              },
-            }
-          );
+          setConversionId(data.id);
+          setPollingEnabled(true);
         },
         onError: (error) => {
           console.error("Job creation failed:", error);
@@ -95,6 +105,28 @@ export default function FileUploadConvert() {
       }
     );
   };
+
+  useEffect(() => {
+    const handleJobCompletion = async () => {
+      if (jobFinishData?.status?.code === "completed") {
+        setPollingEnabled(false);
+        const downloadUrl = jobFinishData?.output?.[0]?.uri;
+        if (downloadUrl) {
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.click();
+          setDoneConverting(true);
+        } else {
+          console.error("Download URL not found.");
+        }
+      } else if (jobFinishData?.status?.code === "failed") {
+        setPollingEnabled(false);
+        console.error("Conversion failed:", jobFinishData);
+      }
+    };
+
+    handleJobCompletion();
+  }, [jobFinishData]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -105,23 +137,6 @@ export default function FileUploadConvert() {
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
     setConvertTo(event.target.value);
   };
-
-  useEffect(() => {
-    if (jobFinishData?.status?.code === "completed") {
-      setPollingEnabled(false);
-      const downloadUrl = jobFinishData?.output?.[0]?.uri;
-      if (downloadUrl) {
-        const link = document.createElement("a");
-        link.href = downloadUrl;
-        link.click();
-      } else {
-        console.error("Download URL not found.");
-      }
-    } else if (jobFinishData?.status?.code === "failed") {
-      setPollingEnabled(false);
-      console.error("Conversion failed:", jobFinishData);
-    }
-  }, [jobFinishData]);
 
   return (
     <Box
@@ -203,23 +218,12 @@ export default function FileUploadConvert() {
 
           <Button
             variant="contained"
-            onClick={handleCreateJob}
+            onClick={handleFileUpload}
             disabled={
-              !file.length ||
-              !convertTo ||
-              isFileTooLarge ||
-              jobStatus === "pending" ||
-              convertStatus === "pending" ||
-              jobFinishData?.status?.code === "processing" ||
-              pollingEnabled
+              !file.length || !convertTo || isFileTooLarge || !doneConverting
             }
           >
-            {jobStatus === "pending" ||
-            convertStatus === "pending" ||
-            jobFinishData?.status?.code === "processing" ||
-            pollingEnabled
-              ? "Converting..."
-              : "Start Conversion"}
+            {!doneConverting ? "Converting..." : "Start Conversion"}
           </Button>
         </>
       )}

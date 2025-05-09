@@ -5,18 +5,21 @@ A **React-based** news aggregation app that fetches and displays news from [**Ne
 **Live Demo:** [News Aggregator on Vercel](https://news-aggregator-react-nine.vercel.app/)
 
 ---
-## V1.5 Updates
+
+## V2 Updates
+
 - Improved UI & Mobile experience
 - Added article navigation in modal (Previous / Next)
 - Use of local storage for caching fetched articles
-- Cloud Convert Integration ( In - Progress)
+- api2convert file conversion Integration
+
 ---
 
 ## Features
 
 **News Search Bar** - Provides real-time suggestions and autocomplete for news queries.  
 **Top Headlines** - Displays the latest headlines from different categories.  
-**Responsive UI** - Built using **Material UI (MUI)** and **Tailwind CSS** for a modern and user-friendly design.  
+**Responsive UI** - Built using **Material UI (MUI)** and **Tailwind CSS** for a modern and user-friendly design.
 
 ---
 
@@ -46,28 +49,37 @@ A **React-based** news aggregation app that fetches and displays news from [**Ne
 git clone -b development https://github.com/Killersea/news-aggregator-react.git
 cd news-aggregator-react
 ```
+
 ### **2. Setup Backend**
 
 ```sh
 cd backend
 npm install
 ```
+
 Run the backend locally:
+
 ```sh
 npm run dev
 ```
+
 ### **3. Setup Frontend**
 
 ```sh
 cd ../frontend
 npm install
 ```
+
 Create a .env file in the frontend directory:
+
 ```sh
 VITE_APP_API_KEY = "Your NewsAPI Key"
 ```
+
 Run the frontend locally:
+
 ```sh
 npm run dev
 ```
+
 The app should now be running at http://localhost:5173
