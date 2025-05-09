@@ -1,31 +1,18 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { uploadAndConvertFile } from "../api/newsApi";
 import { createConversionJob } from "../api/newsApi";
 import { checkJobStatus } from "../api/newsApi";
 
 export const useConversionCreateJob = () => {
   return useMutation({
     mutationFn: ({
+      uploadedUrl,
       category,
       convertTo,
     }: {
+      uploadedUrl: string;
       category: string;
       convertTo: string;
-    }) => createConversionJob(category, convertTo),
-  });
-};
-
-export const useFileConversion = () => {
-  return useMutation({
-    mutationFn: ({
-      file,
-      jobId,
-      server,
-    }: {
-      file: File;
-      jobId: string;
-      server: string;
-    }) => uploadAndConvertFile(file, jobId, server),
+    }) => createConversionJob(uploadedUrl, category, convertTo),
   });
 };
 
