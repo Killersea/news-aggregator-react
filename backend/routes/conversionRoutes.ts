@@ -102,9 +102,9 @@ router.post(
 );
 
 router.get(
-  "/check-job-status/:jobId",
+  "/check-job-status/",
   async (req: Request, res: Response): Promise<void> => {
-    const { jobId } = req.params;
+    const { jobId } = req.query;
 
     if (!jobId) {
       res.status(400).json({ error: "Job ID is required" });

@@ -105,7 +105,7 @@ export const createConversionJob = async (
 
 export const checkJobStatus = async (jobId: string) => {
   const response = await fetch(
-    `http://localhost:5000/api/convert/check-job-status/${jobId}`
+    `http://localhost:5000/api/convert/check-job-status?jobId=${jobId}`
   );
 
   if (!response.ok) {
