@@ -6,9 +6,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://news-aggregator-react-nine.vercel.app"
-  ); // or restrict to your frontend
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  ); // Change to your frontend URL
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
