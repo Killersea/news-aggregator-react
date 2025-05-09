@@ -13,7 +13,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "formidable-serverless": "^1.1.1",
-    "jsdom": "^26.0.0"
+    "jsdom": "^26.0.0",
+    "@vercel/blob": "^1.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
