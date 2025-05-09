@@ -1,16 +1,14 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import axios from "axios";
-import fs from "fs";
-import FormData from "form-data";
-import { IncomingForm } from "formidable-serverless";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { del } from "@vercel/blob";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://news-aggregator-react-nine.vercel.app"
-  ); // Change to your frontend URL
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  ); // or restrict to your frontend
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
@@ -20,63 +18,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const form = new IncomingForm();
-  const API_KEY = process.env.API2CONVERT_API_KEY;
+  try {
+    const body = req.body as HandleUploadBody;
 
-  if (!API_KEY) {
-    return res.status(500).json({ error: "Missing API key" });
+    const result = await handleUpload({
+      body,
+      request: req,
+      onBeforeGenerateToken: async (pathname) => {
+        return {
+          allowedContentTypes: [
+            "audio/*",
+            "video/*",
+            "image/*",
+            "application/pdf",
+            "text/plain",
+          ],
+          addRandomSuffix: false,
+          tokenPayload: JSON.stringify({ uploadedAt: Date.now() }), // optional metadata
+        };
+      },
+      onUploadCompleted: async ({ blob, tokenPayload }) => {
+        console.log("Upload complete:", blob.url, tokenPayload);
+        // Add any post-processing if needed (e.g., update DB)
+      },
+    });
+
+    return res.status(200).json(result);
+  } catch (err: any) {
+    console.error("Upload handler error:", err);
+    return res.status(400).json({ error: err.message || "Upload failed" });
   }
-
-  form.parse(
-    req,
-    async (
-      err: any,
-      fields: { server: string; jobId: string },
-      files: { file: any }
-    ) => {
-      if (err) {
-        console.error("Form parse error:", err);
-        res.status(400).json({ error: "Invalid form data" });
-        return;
-      }
-
-      const server = fields.server as string;
-      const jobId = fields.jobId as string;
-      const file = files.file;
-
-      if (!server || !jobId || !file || Array.isArray(file)) {
-        res
-          .status(400)
-          .json({ error: "Missing or invalid server, jobId, or file" });
-        return;
-      }
-
-      try {
-        const formData = new FormData();
-        formData.append(
-          "file",
-          fs.createReadStream(file.path),
-          file.originalFilename || file.name
-        );
-
-        const response = await axios.post(
-          `${server}/upload-file/${jobId}`,
-          formData,
-          {
-            headers: {
-              ...formData.getHeaders(),
-              "x-oc-api-key": process.env.API2CONVERT_API_KEY,
-            },
-          }
-        );
-        await fs.promises.unlink(file.path);
-        res.json(response.data);
-      } catch (err) {
-        console.error("File upload failed:", err);
-        res
-          .status(500)
-          .json({ error: "Failed to upload file to conversion server" });
-      }
-    }
-  );
 }

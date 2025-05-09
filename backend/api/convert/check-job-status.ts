@@ -1,5 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import axios from "axios";
+import { del } from "@vercel/blob";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader(
@@ -29,6 +30,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
       }
     );
+
+    if (response.data.status.code === "completed") {
+      const blobUrl = response.data.input[0].source;
+      await del(blobUrl);
+    }
 
     return res.status(200).json(response.data);
   } catch (error: any) {

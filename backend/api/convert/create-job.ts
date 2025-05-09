@@ -13,7 +13,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  const { category, target } = req.body;
+  const { source, category, target } = req.body;
   const API_KEY = process.env.API2CONVERT_API_KEY;
 
   if (req.method !== "POST") {
@@ -28,6 +28,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const response = await axios.post(
       "https://api.api2convert.com/v2/jobs",
       {
+        input: [
+          {
+            type: "remote",
+            source,
+          },
+        ],
         conversion: [
           {
             category,
