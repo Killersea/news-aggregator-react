@@ -33,12 +33,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             "text/plain",
           ],
           addRandomSuffix: false,
-          tokenPayload: JSON.stringify({ uploadedAt: Date.now() }), // optional metadata
+          tokenPayload: JSON.stringify({ uploadedAt: Date.now() }),
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
         console.log("Upload complete:", blob.url, tokenPayload);
-        // Add any post-processing if needed (e.g., update DB)
       },
     });
 

@@ -68,14 +68,13 @@ export default function FileUploadConvert() {
 
   const handleFileUpload = async () => {
     if (!file[0] || !convertTo || !category) return;
-
+    console.log("url", import.meta.env.VITE_APP_VERCEL_URL);
     try {
       setDoneConverting(false);
       const { url } = await upload(file[0].name, file[0], {
         access: "public",
-        handleUploadUrl: `${
-          import.meta.env.VITE_APP_VERCEL_URL
-        }/api/convert/upload-file`,
+        handleUploadUrl:
+          "https://news-aggregator-react-zeta.vercel.app/api/convert/upload-file",
       });
       handleCreateJob(url);
       console.log("File uploaded successfully:", url);
